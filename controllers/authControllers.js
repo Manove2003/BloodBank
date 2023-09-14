@@ -45,7 +45,7 @@ const loginController=async(req,res)=>{
             })
         }
         // compare password
-        const comparePassword=await bcrypt.compare(req.body.password,user.password)
+        const comparePassword = await bcrypt.compare(req.body.password,user.password)
         if(!comparePassword){
             return res.status(500).send({
                 success:false,
@@ -69,7 +69,7 @@ const loginController=async(req,res)=>{
     }
 }
 const currentUserController=async(req,res)=>{
-    try {
+      try {
         const user=await userModel.findOne({_id:req.body.userId})
         return res.status(200).send({
             success:true,
@@ -77,12 +77,41 @@ const currentUserController=async(req,res)=>{
             user
         })
     } catch (error) {
-        console.log(error)
         return res.status(500).send({
             success:false,
             message:"unable to get current user"
         })
     }
 }
+const updatecurrentUserController=async(req,res)=>{
+    const id = req.params.id;
+    const {role,name,fathername,email,password,bloodgroup,contact,nukhu,akkahu}=req.body;
+        let updateData;
+        const salt=await bcrypt.genSalt(10);
+        const hashedPassword=await bcrypt.hash(req.body.password,salt);
+        
 
-module.exports={registerController,loginController,currentUserController}
+    try {
+        updateData=await userModel.findByIdAndUpdate(id,{
+            role,
+            name:name,
+            fathername:fathername,
+            bloodgroup:bloodgroup,
+            contact:contact,
+            nukh:nukhu,
+            akkah:akkahu,
+            email:email,
+            password:hashedPassword
+        });
+        
+        await updateData.save().then(()=>res.status(200).send({
+            success:true,
+            message:"User Upated Data Successfully",
+            updateData
+        }))
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+module.exports={registerController,loginController,currentUserController,updatecurrentUserController}

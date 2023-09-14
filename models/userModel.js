@@ -14,14 +14,14 @@ const userSchema=new mongoose.Schema({
         }
         return false
     }},
-    email:{type:String,required:[true,'email is required'],unique:true},
+    email:{type:String,required:[true,'email is required']},
     password:{type:String,required:[true,'password is required']},
     bloodgroup:{type:String,required:function(){
         if(this.role==='donar'){
             return true
         }
         return false
-    },unique:true},
+    }},
     contact:{type:String,required:function(){
         if(this.role==='donar' ){
             return true
